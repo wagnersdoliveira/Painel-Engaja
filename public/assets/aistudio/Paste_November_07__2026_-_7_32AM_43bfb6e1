@@ -1,0 +1,682 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OmniHub — Central de Redes Sociais | Engaja</title>
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --surface: #111827;
+      --surface-card: #1f2937;
+      --border: #374151;
+      --text: #9ca3af;
+      --text-bright: #f3f4f6;
+      --primary: #3b82f6;
+      --accent: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --radius: 8px;
+    }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+    aside {
+      width: 260px;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+    }
+    .logo-area {
+      padding: 20px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: var(--text-bright);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .nav-menu {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      flex: 1;
+    }
+    .nav-item {
+      padding: 14px 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.95rem;
+      transition: background 0.2s, color 0.2s;
+    }
+    .nav-item:hover, .nav-item.active {
+      background: var(--surface-card);
+      color: var(--text-bright);
+      border-left: 4px solid var(--primary);
+    }
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    h1 {
+      color: var(--text-bright);
+      font-size: 1.4rem;
+      margin: 0;
+    }
+    .content-body {
+      padding: 24px;
+      flex: 1;
+    }
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      position: relative;
+    }
+    .kpi-title {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .kpi-value {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: var(--text-bright);
+      margin-top: 8px;
+    }
+    .kpi-badge {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      font-size: 0.75rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .badge-success { background: rgba(16, 185, 129, 0.2); color: var(--accent); }
+    .badge-warning { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 900px) {
+      .dashboard-grid { grid-template-columns: 1fr; }
+    }
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .panel h3 {
+      color: var(--text-bright);
+      margin-top: 0;
+      margin-bottom: 16px;
+      font-size: 1.1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
+    th {
+      color: var(--text-bright);
+      background: var(--surface-card);
+    }
+    .btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 0.85rem;
+      transition: opacity 0.2s;
+    }
+    .btn:hover { opacity: 0.85; }
+    .btn-success { background: var(--accent); }
+    .btn-danger { background: var(--danger); }
+
+    .network-badge {
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: bold;
+    }
+    .net-ig { background: rgba(236, 72, 153, 0.2); color: #ec4899; }
+    .net-tk { background: rgba(37, 244, 238, 0.2); color: #25f4ee; }
+    .net-fb { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
+    .net-li { background: rgba(14, 165, 233, 0.2); color: #0ea5e9; }
+    .net-yt { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+    .net-kw { background: rgba(249, 115, 22, 0.2); color: #f97316; }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text-bright);
+      border-radius: 6px;
+      box-sizing: border-box;
+      margin-bottom: 12px;
+    }
+    label { font-size: 0.85rem; color: var(--text-bright); display: block; margin-bottom: 4px; }
+
+    /* Card Preview Grid - Compact & Clean */
+    .preview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .preview-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-left: 4px solid var(--primary);
+    }
+    .preview-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .preview-card-title {
+      font-weight: bold;
+      color: var(--text-bright);
+      font-size: 0.9rem;
+      margin-bottom: 6px;
+    }
+    .preview-card-legenda {
+      font-size: 0.8rem;
+      color: var(--text);
+      margin-bottom: 12px;
+      background: var(--surface-card);
+      padding: 8px;
+      border-radius: 4px;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .preview-card-footer {
+      font-size: 0.75rem;
+      color: var(--text);
+      border-top: 1px solid var(--border);
+      padding-top: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--surface-card);
+      border: 1px solid var(--accent);
+      color: var(--text-bright);
+      padding: 12px 20px;
+      border-radius: 6px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      display: none;
+      z-index: 1000;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+
+  <aside>
+    <div class="logo-area">
+      📊 <span>OmniHub Engaja</span>
+    </div>
+    <ul class="nav-menu">
+      <li class="nav-item active" onclick="switchTab('visao-geral', this)">📈 Visão Geral & KPIs</li>
+      <li class="nav-item" onclick="switchTab('contas', this)">🔗 Contas & Conexões</li>
+      <li class="nav-item" onclick="switchTab('agendamento', this)">📅 Agendamento & Editor</li>
+      <li class="nav-item" onclick="switchTab('metricas', this)">📊 Métricas & Desempenho</li>
+      <li class="nav-item" onclick="switchTab('restricoes', this)">⚠️ Restrições & Alertas</li>
+    </ul>
+  </aside>
+
+  <main>
+    <header>
+      <h1 id="page-title">Visão Geral & KPIs</h1>
+      <div style="font-size: 0.9rem; color: var(--accent);" id="system-status">● Sistema Ativo & Conectado</div>
+    </header>
+
+    <div class="content-body">
+
+      <!-- TAB 1: VISÃO GERAL -->
+      <div id="visao-geral" class="tab-content active">
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-title">Contas Conectadas</div>
+            <div class="kpi-value" id="kpi-contas">4</div>
+            <div class="kpi-badge badge-success">100% Online</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-title">Posts Agendados</div>
+            <div class="kpi-value" id="kpi-posts">4</div>
+            <div class="kpi-badge badge-success">Próx. 30 dias</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-title">Alcance Total (Mês)</div>
+            <div class="kpi-value">142.8K</div>
+            <div class="kpi-badge badge-success">+18.4%</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-title">Alertas / Restrições</div>
+            <div class="kpi-value" style="color: var(--warning);">1</div>
+            <div class="kpi-badge badge-warning">Instagram (Links)</div>
+          </div>
+        </div>
+
+        <div class="dashboard-grid">
+          <div class="panel">
+            <h3>
+              Fila de Publicações
+              <div style="display: flex; gap: 8px; align-items: center;">
+                <select id="filtro-rede-fila" onchange="renderizarFila()" style="padding: 4px 8px; font-size: 0.8rem; margin-bottom:0; width: auto;">
+                  <option value="TODAS">Todas as Redes</option>
+                  <option value="Instagram">Instagram</option>
+                  <option value="Facebook">Facebook</option>
+                  <option value="TikTok">TikTok</option>
+                  <option value="LinkedIn">LinkedIn</option>
+                  <option value="YouTube">YouTube</option>
+                  <option value="Kwai">Kwai</option>
+                </select>
+                <button class="btn" onclick="switchTab('agendamento', document.querySelectorAll('.nav-item')[2])">+ Novo Agendamento</button>
+              </div>
+            </h3>
+            <table id="tabela-fila">
+              <thead>
+                <tr><th>Rede</th><th>Conta</th><th>Título / Tema</th><th>Data/Hora</th><th>Status</th><th>Ações</th></tr>
+              </thead>
+              <tbody>
+                <!-- Preenchido via JS -->
+              </tbody>
+            </table>
+          </div>
+
+          <div class="panel">
+            <h3>Status das Redes</h3>
+            <table>
+              <thead>
+                <tr><th>Plataforma</th><th>Status</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Instagram (Meta)</td><td><span style="color: var(--warning);">Restrição de Links</span></td></tr>
+                <tr><td>Facebook (Meta)</td><td><span style="color: var(--accent);">Conectado</span></td></tr>
+                <tr><td>TikTok</td><td><span style="color: var(--accent);">Conectado</span></td></tr>
+                <tr><td>LinkedIn</td><td><span style="color: var(--accent);">Conectado</span></td></tr>
+                <tr><td>YouTube</td><td><span style="color: var(--accent);">Conectado</span></td></tr>
+                <tr><td>Kwai</td><td><span style="color: var(--accent);">Conectado</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: CONTAS & CONEXÕES -->
+      <div id="contas" class="tab-content">
+        <div class="panel">
+            <h3>Gerenciamento de Contas Conectadas</h3>
+            <div style="margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
+              <input type="text" id="nova-conta-nome" placeholder="Nome da Conta (ex: Smart Care)" style="max-width:300px; margin-bottom:0;">
+              <select id="nova-conta-rede" style="max-width:200px; margin-bottom:0;">
+                <option value="Instagram">Instagram</option>
+                <option value="Facebook">Facebook</option>
+                <option value="TikTok">TikTok</option>
+                <option value="LinkedIn">LinkedIn</option>
+                <option value="YouTube">YouTube</option>
+                <option value="Kwai">Kwai</option>
+              </select>
+              <button class="btn btn-success" onclick="conectarNovaConta()">+ Conectar Conta</button>
+            </div>
+            <table id="tabela-contas-gerenciar">
+                <thead>
+                    <tr><th>Plataforma</th><th>Nome da Conta</th><th>Handle / ID</th><th>Status</th><th>Ações Rápidas</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><span class="network-badge net-ig">Instagram</span></td><td>Engaja Empresas</td><td>@engajaempresas</td><td><span style="color:var(--accent)">Ativo</span></td><td><button class="btn" onclick="verPreviewConta('Instagram', 'Engaja Empresas')">Ver Prévia e Agendamentos</button> <button class="btn btn-danger" onclick="desconectarConta(this)">Desconectar</button></td></tr>
+                    <tr><td><span class="network-badge net-fb">Facebook</span></td><td>Engaja Empresas Page</td><td>ID: 709990407</td><td><span style="color:var(--accent)">Ativo</span></td><td><button class="btn" onclick="verPreviewConta('Facebook', 'Engaja Empresas Page')">Ver Prévia e Agendamentos</button> <button class="btn btn-danger" onclick="desconectarConta(this)">Desconectar</button></td></tr>
+                    <tr><td><span class="network-badge net-tk">TikTok</span></td><td>Engaja Oficial</td><td>@engajaempresas</td><td><span style="color:var(--accent)">Ativo</span></td><td><button class="btn" onclick="verPreviewConta('TikTok', 'Engaja Oficial')">Ver Prévia e Agendamentos</button> <button class="btn btn-danger" onclick="desconectarConta(this)">Desconectar</button></td></tr>
+                    <tr><td><span class="network-badge net-li">LinkedIn</span></td><td>Wagner Oliveira</td><td>/in/wagner-oliveira</td><td><span style="color:var(--accent)">Ativo</span></td><td><button class="btn" onclick="verPreviewConta('LinkedIn', 'Wagner Oliveira')">Ver Prévia e Agendamentos</button> <button class="btn btn-danger" onclick="desconectarConta(this)">Desconectar</button></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- PAINEL DE PRÉVIA DE CARDS POR CONTA SELECIONADA -->
+        <div class="panel" id="painel-previa-conta" style="margin-top: 20px;">
+          <h3 id="titulo-previa">Prévia de Cards e Agendamentos — Selecione uma conta acima</h3>
+          <div class="preview-grid" id="grid-previa-cards">
+            <!-- Os cards serão injetados aqui -->
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: AGENDAMENTO & EDITOR -->
+      <div id="agendamento" class="tab-content">
+        <div class="dashboard-grid">
+            <div class="panel">
+                <h3>Criar & Agendar Nova Publicação</h3>
+                <label>Selecione a(s) Rede(s):</label>
+                <div style="display:flex; gap:10px; margin-bottom:12px; flex-wrap:wrap;" id="checkboxes-redes">
+                    <label><input type="checkbox" value="Instagram" checked> Instagram</label>
+                    <label><input type="checkbox" value="Facebook" checked> Facebook</label>
+                    <label><input type="checkbox" value="TikTok"> TikTok</label>
+                    <label><input type="checkbox" value="LinkedIn"> LinkedIn</label>
+                    <label><input type="checkbox" value="YouTube"> YouTube</label>
+                    <label><input type="checkbox" value="Kwai"> Kwai</label>
+                </div>
+                <label>Título / Tema Interno</label>
+                <input type="text" id="form-titulo" placeholder="Ex: Lançamento Coleção Natal">
+                <label>Legenda / Texto da Publicação</label>
+                <textarea id="form-legenda" rows="5" placeholder="Digite a legenda formatada com hashtags..."></textarea>
+                <label>Data e Hora do Agendamento</label>
+                <input type="datetime-local" id="form-data">
+                <button class="btn btn-success" onclick="agendarPublicacao()">🚀 Agendar em Lote nas Redes</button>
+            </div>
+            <div class="panel">
+                <h3>Instruções Operacionais</h3>
+                <p style="font-size:0.9rem; line-height:1.5;">• O agendamento é disparado em lote para todas as contas marcadas.<br>• Verifique sempre o limite de 29 dias da Meta para posts programados.<br>• Use o botão <b>Ver Prévia e Agendamentos</b> na aba de Contas para inspecionar os cards visuais.</p>
+            </div>
+        </div>
+      </div>
+
+      <!-- TAB 4: MÉTRICAS -->
+      <div id="metricas" class="tab-content">
+        <div class="panel">
+            <h3>Desempenho Consolidado por Rede</h3>
+            <table>
+                <thead>
+                    <tr><th>Plataforma</th><th>Impressões / Alcance</th><th>Engajamento (%)</th><th>Cliques no Link</th><th>Crescimento (Mês)</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Instagram</td><td>68.4K</td><td>4.8%</td><td>1.2K</td><td>+12%</td></tr>
+                    <tr><td>TikTok</td><td>42.1K</td><td>6.2%</td><td>850</td><td>+25%</td></tr>
+                    <tr><td>Facebook</td><td>18.3K</td><td>2.1%</td><td>430</td><td>+5%</td></tr>
+                    <tr><td>LinkedIn</td><td>8.9K</td><td>5.4%</td><td>310</td><td>+15%</td></tr>
+                    <tr><td>YouTube</td><td>3.5K</td><td>7.0%</td><td>120</td><td>+8%</td></tr>
+                    <tr><td>Kwai</td><td>1.6K</td><td>3.9%</td><td>95</td><td>+10%</td></tr>
+                </tbody>
+            </table>
+        </div>
+      </div>
+
+      <!-- TAB 5: RESTRIÇÕES -->
+      <div id="restricoes" class="tab-content">
+        <div class="panel">
+            <h3>Painel de Restrições e Alertas Ativos</h3>
+            <table>
+                <thead>
+                    <tr><th>Rede / Conta</th><th>Tipo de Alerta</th><th>Motivo / Details</th><th>Prazo / Ação</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="network-badge net-ig">Instagram (@engajaempresas)</span></td>
+                        <td><span style="color:var(--warning)">Restrição de Links</span></td>
+                        <td>Práticas comerciais proibidas (Link de afiliado na bio/direct).</td>
+                        <td>Até 02/12/2026 (Pode pedir revisão)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <div id="toast">Ação realizada com sucesso!</div>
+
+  <script>
+    let listaPosts = [
+      { id: 1, rede: "Instagram", conta: "Engaja Empresas", titulo: "Carrossel: Estratégias de Vendas", legenda: "Estratégia comprovada para fechar mais vendas no digital. Mande DIAGNÓSTICO no direct. #engaja #vendas", data: "08/11/2026 - 07:00", status: "Agendado" },
+      { id: 2, rede: "TikTok", conta: "Engaja Oficial", titulo: "Reels/TikTok: Automação no WhatsApp", legenda: "Como automatizar seu atendimento sem perder vendas. #automacao #whatsapp", data: "09/11/2026 - 18:00", status: "Agendado" },
+      { id: 3, rede: "LinkedIn", conta: "Wagner Oliveira", titulo: "Artigo: Liderança Cristã e Tech", legenda: "Reflexões sobre princípios e desenvolvimento de software. #lideranca #dev", data: "10/11/2026 - 08:30", status: "Agendado" },
+      { id: 4, rede: "Kwai", conta: "Fashion Store Campinas", titulo: "Look do Dia - Coleção Natal", legenda: "Novidades exclusivas na Fashion Store Campinas! Venha conferir. #fashion #natal", data: "10/11/2026 - 10:00", status: "Planejado" }
+    ];
+
+    function switchTab(tabId, element) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+
+      document.getElementById(tabId).classList.add('active');
+      if(element) element.classList.add('active');
+
+      const titles = {
+        'visao-geral': 'Visão Geral & KPIs',
+        'contas': 'Contas & Conexões',
+        'agendamento': 'Agendamento & Editor',
+        'metricas': 'Métricas & Desempenho',
+        'restricoes': 'Restrições & Alertas'
+      };
+      document.getElementById('page-title').innerText = titles[tabId];
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.innerText = msg;
+      t.style.display = 'block';
+      setTimeout(() => { t.style.display = 'none'; }, 3000);
+    }
+
+    function renderizarFila() {
+      const selecao = document.getElementById('filtro-rede-fila').value;
+      const tbody = document.querySelector('#tabela-fila tbody');
+      if (!tbody) return;
+      tbody.innerHTML = "";
+
+      const filtrados = selecao === 'TODAS' ? listaPosts : listaPosts.filter(p => p.rede === selecao);
+
+      if(filtrados.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text);">Nenhum post agendado para esta rede.</td></tr>`;
+        return;
+      }
+
+      filtrados.forEach(p => {
+        const badgeClass = p.rede === 'Instagram' ? 'net-ig' : p.rede === 'Facebook' ? 'net-fb' : p.rede === 'TikTok' ? 'net-tk' : p.rede === 'LinkedIn' ? 'net-li' : p.rede === 'YouTube' ? 'net-yt' : 'net-kw';
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><span class="network-badge ${badgeClass}">${p.rede}</span></td>
+          <td>@${p.conta.toLowerCase().replace(/\s+/g,'')}</td>
+          <td>${p.titulo}</td>
+          <td>${p.data}</td>
+          <td>${p.status}</td>
+          <td><button class="btn btn-danger" onclick="removerPost(${p.id})">Cancelar</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      const kpiPosts = document.getElementById('kpi-posts');
+      if (kpiPosts) kpiPosts.innerText = listaPosts.length;
+    }
+
+    function verPreviewConta(rede, nomeConta) {
+      const painel = document.getElementById('painel-previa-conta');
+      const titulo = document.getElementById('titulo-previa');
+      const grid = document.getElementById('grid-previa-cards');
+
+      if (!grid) return;
+
+      titulo.innerText = `Prévia de Cards e Agendamentos para: ${nomeConta} (${rede})`;
+
+      const postsConta = listaPosts.filter(p =>
+        p.rede.toLowerCase() === rede.toLowerCase() ||
+        p.conta.toLowerCase().includes(nomeConta.toLowerCase()) ||
+        nomeConta.toLowerCase().includes(p.conta.toLowerCase())
+      );
+
+      const postsParaExibir = postsConta.length > 0 ? postsConta : listaPosts;
+
+      grid.innerHTML = postsParaExibir.map(p => {
+        const badgeClass = p.rede === 'Instagram' ? 'net-ig' : p.rede === 'Facebook' ? 'net-fb' : p.rede === 'TikTok' ? 'net-tk' : p.rede === 'LinkedIn' ? 'net-li' : p.rede === 'YouTube' ? 'net-yt' : 'net-kw';
+
+        // Garante que a prévia exiba apenas uma linha curta/resumida do texto
+        const textoCurto = p.legenda.length > 90 ? p.legenda.substring(0, 90) + '...' : p.legenda;
+
+        return `
+          <div class="preview-card">
+            <div>
+              <div class="preview-card-header">
+                <span class="network-badge ${badgeClass}">${p.rede}</span>
+                <span style="font-size: 0.8rem; color: var(--accent);">${p.status}</span>
+              </div>
+              <div class="preview-card-title">${p.titulo}</div>
+              <div class="preview-card-legenda">${textoCurto}</div>
+            </div>
+            <div class="preview-card-footer">
+              <span>📅 ${p.data}</span>
+              <button class="btn btn-danger" style="padding: 4px 8px; font-size: 0.75rem;" onclick="removerPost(${p.id}); verPreviewConta('${rede}', '${nomeConta}');">Excluir</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      showToast(`Exibindo ${postsParaExibir.length} card(s) para ${nomeConta}`);
+      painel.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function conectarNovaConta() {
+      const nome = document.getElementById('nova-conta-nome').value;
+      const rede = document.getElementById('nova-conta-rede').value;
+      if(!nome) {
+        alert('Digite o nome da conta!');
+        return;
+      }
+      const tbody = document.querySelector('#tabela-contas-gerenciar tbody');
+      const tr = document.createElement('tr');
+      const badgeClass = rede === 'Instagram' ? 'net-ig' : rede === 'Facebook' ? 'net-fb' : rede === 'TikTok' ? 'net-tk' : rede === 'LinkedIn' ? 'net-li' : rede === 'YouTube' ? 'net-yt' : 'net-kw';
+
+      tr.innerHTML = `<td><span class="network-badge ${badgeClass}">${rede}</span></td><td>${nome}</td><td>@${nome.toLowerCase().replace(/\s+/g,'')}</td><td><span style="color:var(--accent)">Ativo</span></td><td><button class="btn" onclick="verPreviewConta('${rede}', '${nome}')">Ver Prévia e Agendamentos</button> <button class="btn btn-danger" onclick="desconectarConta(this)">Desconectar</button></td>`;
+      tbody.appendChild(tr);
+
+      document.getElementById('nova-conta-nome').value = '';
+      let kpi = document.getElementById('kpi-contas');
+      if(kpi) kpi.innerText = parseInt(kpi.innerText) + 1;
+
+      showToast(`Conta ${nome} conectada com sucesso!`);
+    }
+
+    function desconectarConta(btn) {
+      if(confirm('Tem certeza que deseja desconectar esta conta?')) {
+        btn.closest('tr').remove();
+        let kpi = document.getElementById('kpi-contas');
+        if(kpi) kpi.innerText = Math.max(0, parseInt(kpi.innerText) - 1);
+        showToast('Conta desconectada.');
+      }
+    }
+
+    function removerPost(id) {
+      if(confirm('Deseja cancelar e remover este agendamento?')) {
+        listaPosts = listaPosts.filter(p => p.id !== id);
+        renderizarFila();
+        const tituloPrevia = document.getElementById('titulo-previa').innerText;
+        if (!tituloPrevia.includes('Selecione uma conta')) {
+          const match = tituloPrevia.match(/para: (.*?) \(/);
+          if (match && match[1]) {
+            const redeMatch = tituloPrevia.match(/\((.*?)\)$/);
+            const rede = redeMatch ? redeMatch[1] : '';
+            verPreviewConta(rede, match[1]);
+          }
+        }
+        showToast('Agendamento cancelado.');
+      }
+    }
+
+    function agendarPublicacao() {
+      const titulo = document.getElementById('form-titulo').value;
+      const legenda = document.getElementById('form-legenda').value;
+      const data = document.getElementById('form-data').value;
+
+      if(!titulo || !data) {
+        alert('Preencha o título e a data de agendamento!');
+        return;
+      }
+
+      const checkboxes = document.querySelectorAll('#checkboxes-redes input[type="checkbox"]:checked');
+      if(checkboxes.length === 0) {
+        alert('Selecione pelo menos uma rede social!');
+        return;
+      }
+
+      checkboxes.forEach(cb => {
+        const rede = cb.value;
+        const novoId = listaPosts.length > 0 ? Math.max(...listaPosts.map(p => p.id)) + 1 : 1;
+        listaPosts.push({
+          id: novoId,
+          rede: rede,
+          conta: "Engaja Empresas",
+          titulo: titulo,
+          legenda: legenda || "Sem legenda informada.",
+          data: data.replace('T', ' - '),
+          status: "Agendado"
+        });
+      });
+
+      document.getElementById('form-titulo').value = '';
+      document.getElementById('form-legenda').value = '';
+      document.getElementById('form-data').value = '';
+
+      renderizarFila();
+      showToast(`Publicação agendada com sucesso em ${checkboxes.length} rede(s)!`);
+      switchTab('visao-geral', document.querySelectorAll('.nav-item')[0]);
+    }
+
+    window.onload = () => {
+      renderizarFila();
+      verPreviewConta('Instagram', 'Engaja Empresas');
+    };
+  </script>
+</body>
+</html>

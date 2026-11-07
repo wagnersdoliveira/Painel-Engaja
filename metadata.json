@@ -1,0 +1,6 @@
+{
+  "name": "OmniHub Engaja",
+  "description": "Central de gestão, agendamento em lote, monitoramento de métricas e controle de restrições para redes sociais.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
